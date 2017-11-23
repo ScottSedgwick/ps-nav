@@ -1,0 +1,24 @@
+{
+  "name": "tut01",
+  "version": "1.0.0",
+  "description": "Purescript tutorial",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pack": "pulp browserify -t dist/Main.js -m Main -I src"
+  },
+  "author": "Scott Sedgwick",
+  "license": "ISC",
+  "dependencies": {
+    "create-react-class": "^15.6.0",
+    "pulp": "^12.0.1",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
+  },
+  "devDependencies": {
+    "purescript": "0.11.6",
+    "purs-loader": "^3.0.0",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2"
+  }
+}
