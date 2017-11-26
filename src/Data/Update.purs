@@ -46,50 +46,11 @@ update ctx act evt = for_ (valueOf evt) \s -> do
     -- Write changed state
     writeState ctx nns
         
-  
--- changeModel :: forall props eff. Model props -> Person -> Errors -> Eff ( console :: CONSOLE, state :: ReactState ReadWrite | eff ) AppState
--- changeModel ctx p e = writeState ctx (AppState { person: p, errors: e, viewMode: AddressBook })
-
--- changeViewMode :: forall props eff. Model props -> ViewMode -> Event -> Eff ( state :: ReactState ReadWrite | eff ) AppState
--- changeViewMode ctx nv _ = do
---     AppState { person: p, errors: e, viewMode: _ } <- readState ctx
---     writeState ctx (AppState { person: p, errors: e, viewMode: nv })
-
 valueOf :: Event -> Either (NonEmptyList ForeignError) String
 valueOf e = runExcept do
     target <- index (toForeign e) "target"
     value <- index target "value"
     readString value
-
--- type AppStateUpdate a = (AppState -> a -> AppState)
-
--- updateAppState :: forall props eff a. Model props -> (String -> Person) -> Event -> Eff ( console :: CONSOLE, state :: ReactState ReadWrite | eff ) Unit
--- updateAppState ctx update e =
---     for_ (valueOf e) \s -> do
---         let newPerson = update s
---         log "Running validators"
---         case validatePerson' newPerson of
---             Left errors -> changeModel ctx newPerson errors
---             Right _     -> changeModel ctx newPerson [] 
-
--- updateFN :: AppStateUpdate String
--- updateFN (AppState { person: (Person p), errors: e, viewMode: v }) s =
---     AppState { person: Person (p {firstName = s}), errors: e, viewMode: v }
-
--- updateFirstName :: Person -> String -> Person
--- updateFirstName (Person p) s = Person $ p { firstName = s }
-
--- updateLastName :: Person -> String -> Person
--- updateLastName (Person p) s = Person $ p { lastName  = s }
-
--- updateStreet :: Person -> Address -> String -> Person
--- updateStreet (Person p) (Address a) s = Person $ p { homeAddress = Address $ a { street = s } }
-
--- updateCity :: Person -> Address -> String -> Person
--- updateCity (Person p) (Address a) s = Person $ p { homeAddress = Address $ a { city   = s } }
-
--- updateState :: Person -> Address -> String -> Person
--- updateState (Person p) (Address a) s = Person $ p { homeAddress = Address $ a { state  = s } }
 
 updatePhoneNumber :: String -> PhoneNumber -> PhoneNumber
 updatePhoneNumber s (PhoneNumber o) = PhoneNumber $ o { number = s }
