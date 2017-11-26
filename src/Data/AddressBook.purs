@@ -39,14 +39,6 @@ person :: String -> String -> Address -> Array PhoneNumber -> Person
 person firstName lastName homeAddress phones =
   Person { firstName, lastName, homeAddress, phones }
 
-examplePerson :: Person
-examplePerson =
-  person "John" "Smith"
-         (address "123 Fake Street" "FakeTown" "VIC")
-         [ phoneNumber HomePhone "03-5555-5555"
-         , phoneNumber CellPhone "04-5555-5555"
-         ]
-
 instance showAddress :: Show Address where
   show (Address o) = "Address " <>
     "{ street: " <> show o.street <>
@@ -55,10 +47,10 @@ instance showAddress :: Show Address where
     " }"
 
 instance showPhoneType :: Show PhoneType where
-  show HomePhone = "HomePhone"
-  show WorkPhone = "WorkPhone"
-  show CellPhone = "CellPhone"
-  show OtherPhone = "OtherPhone"
+  show HomePhone = "Home Phone"
+  show WorkPhone = "Work Phone"
+  show CellPhone = "Cell Phone"
+  show OtherPhone = "Other Phone"
 
 instance showPhoneNumber :: Show PhoneNumber where
   show (PhoneNumber o) = "PhoneNumber " <>

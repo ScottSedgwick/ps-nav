@@ -1,6 +1,7 @@
 module Data.AddressBook.Validation where
 
 import Prelude
+
 import Data.AddressBook (Address(..), Person(..), PhoneNumber(..), address, person, phoneNumber)
 import Data.Either (Either(..))
 import Data.String (length)
@@ -54,3 +55,4 @@ validatePerson (Person o) =
 
 validatePerson' :: Person -> Either Errors Person
 validatePerson' p = unV Left Right $ validatePerson p
+
