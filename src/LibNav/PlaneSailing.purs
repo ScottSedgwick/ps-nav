@@ -1,34 +1,41 @@
 module LibNav.PlaneSailing where
 
--- import LibNav.GreatCircle
--- import LibNav.Types
+import Prelude ((<), ($), (-), (>), (/), (+), (*))
+import Math (abs, atan, cos, pi, tan)
 
--- planeQuadrant :: Posn -> Posn -> Quadrant
--- planeQuadrant p1 p2
---   | lat p1 < lat p2 = -- N
---     if lon p1 < lon p2
---     then if (lon p2 - lon p1) > Deg 180 then NW else NE
---     else if (lon p1 - lon p2) > Deg 180 then NE else NW
---   | lon p1 < lon p2 = if (lon p2 - lon p1) > Deg 180 then SW else SE
---   | (lon p1 - lon p2) > Deg 180 = SE
---   | otherwise = SW
+import LibNav.GreatCircle (gcQuadAdjust)
+import LibNav.Types (Degrees(..), Posn(..), Quadrant(..), NMiles, degToRad, radToDeg, tau)
 
--- planeCourse :: Posn -> Posn -> Degrees
--- planeCourse p1 p2 = gcQuadAdjust (planeQuadrant p1 p2) rawCrs
---     where
---         dLat    = abs $ lat p1 - lat p2
---         dl      = abs $ lon p1 - lon p2
---         dLon    = abs $ if dl > 180 then 360 - dl else dl
---         meanLat = (lat p1 + lat p2) / 2
---         dep     = dLon * cos meanLat
---         rawCrs  = atan $ dep / dLat
+planeQuadrant :: Posn -> Posn -> Quadrant
+planeQuadrant (Posn p1) (Posn p2)
+  | p1.lat < p2.lat = -- N
+    if p1.lon < p2.lon
+    then if (p2.lon - p1.lon) > Deg 180.0 then NW else NE
+    else if (p1.lon - p2.lon) > Deg 180.0 then NE else NW
+  | p1.lon < p2.lon = if (p2.lon - p1.lon) > Deg 180.0 then SW else SE
+  | (p1.lon - p2.lon) > Deg 180.0 = SE
+  | true = SW
+
+planeCourse :: Posn -> Posn -> Degrees
+planeCourse (Posn p1) (Posn p2) = gcQuadAdjust (planeQuadrant (Posn p1) (Posn p2)) (radToDeg rawCrs)
+    where
+        rlat1      = degToRad p1.lat
+        rlat2      = degToRad p2.lat
+        rlon1      = degToRad p1.lon
+        rlon2      = degToRad p2.lon
+        dLat       = abs $ rlat1 - rlat2
+        dl         = abs $ rlon1 - rlon2
+        dLon       = abs $ if dl > pi then tau - dl else dl
+        meanLat    = (rlat1 + rlat2) / 2.0
+        dep        = dLon * cos meanLat
+        rawCrs     = atan $ dep / dLat
 
 
--- planeDistance :: Posn -> Posn -> NMiles
--- planeDistance p1 p2 = abs $ 60 * dLat / c
---     where
---         (Deg dLat) = lat p1 - lat p2
---         (Deg c) = cos $ planeCourse p1 p2
+planeDistance :: Posn -> Posn -> NMiles
+planeDistance (Posn p1) (Posn p2) = abs $ 60.0 * dLat / c
+    where
+        (Deg dLat) = p1.lat - p2.lat
+        c = cos $ degToRad $ planeCourse (Posn p1) (Posn p2)
 
 -- distance :: Knots -> Hours -> NMiles
 -- distance = (*)
@@ -39,13 +46,19 @@ module LibNav.PlaneSailing where
 -- timeTaken :: NMiles -> Knots -> Hours
 -- timeTaken = (/)
 
--- planeDR :: Posn -> Degrees -> NMiles -> Posn
--- planeDR p c d = Posn { lat = fLat, lon = fLon }
---     where
---         dLat = (Deg d / 60) * cos c
---         fLat = lat p + dLat
---         dep  = dLat * tan c
---         meanLat = lat p + (dLat / 2)
---         dLon = dep / cos meanLat
---         l    = lon p + dLon
---         fLon = if l > 180 then l - 360 else l
+dcos :: Degrees -> Number
+dcos a = cos $ degToRad a
+
+dtan :: Degrees -> Number
+dtan a = tan $ degToRad a
+
+planeDR :: Posn -> Degrees -> NMiles -> Posn
+planeDR (Posn p) c d = Posn { lat: fLat, lon: fLon }
+    where
+        dLat      = d * dcos c / 60.0
+        fLat      = p.lat + (Deg dLat)
+        dep       = dLat * dtan c
+        meanLat   = p.lat + Deg (dLat / 2.0)
+        dLon      = dep / dcos meanLat
+        lon       = p.lon + (Deg dLon)
+        fLon      = if lon > (Deg 180.0) then lon - (Deg 360.0) else lon

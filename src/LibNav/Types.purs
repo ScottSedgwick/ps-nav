@@ -10,7 +10,7 @@ import Data.Num (class Num, abs, fromBigInt, signum)
 import Data.Ord (compare)
 import Data.Real (class Real, toRational)
 import Data.Tuple (Tuple(..))
-import Math (pi, trunc, exp, log, sin, cos, asin, acos, atan) --, sinh, cosh, asinh, acosh, atanh)
+import Math (Radians, pi, trunc, exp, log, sin, cos, asin, acos, atan) --, sinh, cosh, asinh, acosh, atanh)
 
 mantissa :: Number -> Number
 mantissa x = x - trunc x
@@ -21,8 +21,14 @@ tau = pi * 2.0
 d2r :: Number -> Number
 d2r d = tau * d / 360.0
 
+degToRad :: Degrees -> Radians
+degToRad (Deg d) = d2r d
+
 r2d :: Number -> Number
 r2d r = r * 360.0 / tau
+
+radToDeg :: Radians -> Degrees
+radToDeg r = Deg (r2d r)
 
 newtype Degrees = Deg Number 
 instance degreesOrd :: Ord Degrees where

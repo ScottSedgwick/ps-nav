@@ -2,20 +2,19 @@ module GreatCircleTests ( gcTests ) where
 
 import Data.Array (filter)
 import Data.Foldable (for_)
-import Data.Ord (abs)
-import Prelude (Unit, discard, negate, show, when, ($), (-), (/=), (<>), (>))
-import Test.Spec (describe, it, Spec)
-import Test.Spec.Assertions (fail, shouldEqual)
+import Prelude (discard, negate, (/=))
+import Test.Spec (describe, it)
+import Test.Spec.Assertions (shouldEqual)
 
 import LibNav.GreatCircle (gcDistance, gcFinalCourse, gcFinalQuadrant, gcInitCourse, gcInitQuadrant, getDir)
 import LibNav.Types (Degrees(..), EW(..), NMiles, Posn(..), Quadrant(..), position)
-import Test.Types (TestCase)
+import Test.Types (TestCase, TestSuite, shouldNearlyBe)
 
 -- The math and worked examples for these tests taken from:
 -- http://shipofficer.com/so/wp-content/uploads/2015/02/10.-Great-Circle-Sailing.pdf
 -- A copy of this PDF is in the docs folder.
 
-gcTests :: forall r. Spec r Unit
+gcTests :: forall r. TestSuite r
 gcTests = describe "Great circle tests" do
     it "Calculates distance" do
         for_ gcTestData mkDistTest
@@ -66,6 +65,7 @@ gcTestData =
                 , quad2: NW
                 , ew: W
                 }
+    -- Crosses meridian
     , TestData  { title: "Test Case 3"
                 , pos1: position 49 12.0 (-122) 50.0
                 , pos2: position 13 30.0   145  15.0
@@ -75,7 +75,8 @@ gcTestData =
                 , hdg2: Deg 0.0
                 , quad2: NE 
                 , ew: W
-                }     -- Crosses meridian
+                }  
+    -- Crosses meridian   
     , TestData  { title: "Test Case 4"
                 , pos1: position (-46) 20.0   169  10.0
                 , pos2: position (-26) 25.0 (-105) 15.0
@@ -85,7 +86,8 @@ gcTestData =
                 , hdg2: Deg 0.0
                 , quad2: NE 
                 , ew: E
-                }     -- Crosses meridian
+                } 
+    -- Crosses meridian and equator    
     , TestData  { title: "Test Case 5"
                 , pos1: position (-17) 0.0   170  0.0
                 , pos2: position   22  0.0 (-110) 0.0
@@ -95,14 +97,14 @@ gcTestData =
                 , hdg2: Deg 70.5113954
                 , quad2: NE 
                 , ew: E
-                }     -- Crosses meridian and equator
+                }     
     ]
 
 mkDistTest :: forall r. TestData -> TestCase r
-mkDistTest (TestData td) = td.dist `shouldBeClose 0.05` gcDistance td.pos1 td.pos2
+mkDistTest (TestData td) = td.dist `shouldNearlyBe 0.05` gcDistance td.pos1 td.pos2
 
 mkInitCourseTest :: forall r. TestData -> TestCase r
-mkInitCourseTest (TestData td) = h1 `shouldBeClose 0.1` h2
+mkInitCourseTest (TestData td) = h1 `shouldNearlyBe 0.1` h2
   where
     (Deg h1) = td.hdg1
     (Deg h2) = gcInitCourse td.pos1 td.pos2
@@ -120,12 +122,7 @@ mkFinalQuadTest :: forall r. TestData -> TestCase r
 mkFinalQuadTest (TestData td) = td.quad2 `shouldEqual` gcFinalQuadrant td.pos1 td.pos2
 
 mkFinalCourseTest :: forall r. TestData -> TestCase r
-mkFinalCourseTest (TestData td) = h1 `shouldBeClose 0.1` h2
+mkFinalCourseTest (TestData td) = h1 `shouldNearlyBe 0.1` h2
   where
     (Deg h1) = td.hdg2
     (Deg h2) = gcFinalCourse td.pos1 td.pos2
-
-shouldBeClose :: forall r. Number -> Number -> Number -> TestCase r
-shouldBeClose delta v1 v2 =
-  when (abs (v1 - v2) > delta) $
-    fail $ show v1 <> " ≠ " <> show v2
