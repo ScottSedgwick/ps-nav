@@ -1,4 +1,4 @@
-module Data.AddressBook.Validation where
+module Data.AddressBook.Validation(Errors, validatePerson') where
 
 import Prelude
 

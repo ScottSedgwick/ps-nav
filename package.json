@@ -14,6 +14,7 @@
   "license": "ISC",
   "repository": "git@github.com:ScottSedgwick/ps-nav.git",
   "dependencies": {
+    "big-integer": "^1.6.26",
     "create-react-class": "^15.6.0",
     "pulp": "^12.0.1",
     "react": "^15.6.1",

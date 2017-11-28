@@ -12,13 +12,13 @@ import DOM.Node.NonElementParentNode (getElementById)
 import DOM.Node.Types (ElementId(..), documentToNonElementParentNode)
 import Data.Maybe (fromJust)
 import Partial.Unsafe (unsafePartial)
-import React (ReactClass, createFactory, spec, createClass)
+import React (createFactory)
 import React.DOM as D
 import ReactDOM (render)
 
 import Data.AddressBook (Person, person, address, phoneNumber, PhoneType(..))
 import Data.Model (AppState(..), ViewMode(..))
-import View.MainView (renderView)
+import View.MainView (mainView)
 
 examplePerson :: Person
 examplePerson =
@@ -35,13 +35,10 @@ initialState = AppState
     , viewMode: AddressBook
     }
 
-mainView :: forall props. ReactClass props
-mainView = createClass $ spec initialState renderView
-
 main :: Eff ( console :: CONSOLE, dom :: DOM ) Unit
 main = void do
     log "Rendering address book component"
-    let component = D.div [] [ createFactory mainView unit ]
+    let component = D.div [] [ createFactory (mainView initialState) unit ]
     doc <- window >>= document
     ctr <- getElementById (ElementId "main") (documentToNonElementParentNode (htmlDocumentToDocument doc))
     render component (unsafePartial fromJust ctr)
