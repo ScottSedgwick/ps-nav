@@ -10,12 +10,12 @@ import Data.Num (class Num, abs, fromBigInt, signum)
 import Data.Ord (compare)
 import Data.Real (class Real, toRational)
 import Data.Tuple (Tuple(..))
-import Math (Radians, pi, trunc, exp, log, sin, cos, asin, acos, atan) --, sinh, cosh, asinh, acosh, atanh)
+import Math (Radians, pi, trunc, exp, log, sin, cos, tan, asin, acos, atan) 
 
 mantissa :: Number -> Number
 mantissa x = x - trunc x
 
-tau :: Number
+tau :: Radians
 tau = pi * 2.0
 
 d2r :: Number -> Number
@@ -61,7 +61,7 @@ instance degreesEuclideanRing :: EuclideanRing Degrees where
   degree (Deg a) = 0
 
 dpi :: Degrees
-dpi = Deg pi
+dpi = radToDeg pi
 
 dexp :: Degrees -> Degrees
 dexp (Deg x) = Deg $ exp x
@@ -69,25 +69,23 @@ dexp (Deg x) = Deg $ exp x
 dlog :: Degrees -> Degrees
 dlog (Deg x) = Deg $ log x
 
-dsin :: Degrees -> Degrees
-dsin (Deg x) = Deg $ sin $ d2r x
+dsin :: Degrees -> Number
+dsin (Deg x) = sin $ d2r x
 
-dcos :: Degrees -> Degrees
-dcos (Deg x) = Deg $ cos $ d2r x
+dcos :: Degrees -> Number
+dcos (Deg x) = cos $ d2r x
 
-dasin :: Degrees -> Degrees
-dasin (Deg x) = Deg $ r2d $ asin x
+dtan :: Degrees -> Number
+dtan (Deg x) = tan $ d2r x
 
-dacos :: Degrees -> Degrees
-dacos (Deg x) = Deg $ r2d $ acos x
+dasin :: Number -> Degrees
+dasin x = Deg $ r2d $ asin x
 
-datan :: Degrees -> Degrees
-datan (Deg x) = Deg $ r2d $ atan x
--- dsinh (Deg x) = Deg $ sinh $ d2r x
--- dcosh (Deg x) = Deg $ cosh $ d2r x
--- dasinh (Deg x) = Deg $ r2d $ asinh x
--- dacosh (Deg x) = Deg $ r2d $ acosh x
--- datanh (Deg x) = Deg $ r2d $ atanh x
+dacos :: Number -> Degrees
+dacos x = Deg $ r2d $ acos x
+
+datan :: Number -> Degrees
+datan x = Deg $ r2d $ atan x
 
 type Knots = Number
 type Lat = Degrees

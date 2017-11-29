@@ -17,9 +17,6 @@ data TestData = TestData
     , dist :: NMiles
     }
 
-errDist :: NMiles
-errDist = 0.03
-
 testData :: Array TestData
 testData = [ TestData { title: "Test Case 1", pos1: position 35 20.0 (-15) 31.0,   pos2: position 35 20.0 (-25) 50.0, dist: 505.0 }
            , TestData { title: "Test Case 2", pos1: position (-30) 0.0 (-171) 0.0, pos2: position (-30) 0.0 178 0.0,  dist: 571.6 }

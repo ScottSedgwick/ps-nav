@@ -17,9 +17,6 @@ data TestData = TestData
     , quad :: Quadrant
     }
 
-errDist :: NMiles
-errDist = 0.05
-
 testData :: Array TestData
 testData = [ TestData { pos1: position 27 15.0 (-71) 23.0
                       , pos2: position 28 11.0 (-68) 18.0

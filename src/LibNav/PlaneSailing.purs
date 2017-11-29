@@ -1,10 +1,10 @@
 module LibNav.PlaneSailing where
 
 import Prelude ((<), ($), (-), (>), (/), (+), (*))
-import Math (abs, atan, cos, pi, tan)
+import Math (abs, atan, cos, pi)
 
 import LibNav.GreatCircle (gcQuadAdjust)
-import LibNav.Types (Degrees(..), Posn(..), Quadrant(..), NMiles, degToRad, radToDeg, tau)
+import LibNav.Types (Degrees(..), Posn(..), Quadrant(..), NMiles, Knots, Hours, degToRad, radToDeg, tau, dcos, dtan)
 
 planeQuadrant :: Posn -> Posn -> Quadrant
 planeQuadrant (Posn p1) (Posn p2)
@@ -35,22 +35,16 @@ planeDistance :: Posn -> Posn -> NMiles
 planeDistance (Posn p1) (Posn p2) = abs $ 60.0 * dLat / c
     where
         (Deg dLat) = p1.lat - p2.lat
-        c = cos $ degToRad $ planeCourse (Posn p1) (Posn p2)
+        c = dcos $ planeCourse (Posn p1) (Posn p2)
 
--- distance :: Knots -> Hours -> NMiles
--- distance = (*)
+distance :: Knots -> Hours -> NMiles
+distance = (*)
 
--- speed :: NMiles -> Hours -> Knots
--- speed = (/)
+speed :: NMiles -> Hours -> Knots
+speed = (/)
 
--- timeTaken :: NMiles -> Knots -> Hours
--- timeTaken = (/)
-
-dcos :: Degrees -> Number
-dcos a = cos $ degToRad a
-
-dtan :: Degrees -> Number
-dtan a = tan $ degToRad a
+timeTaken :: NMiles -> Knots -> Hours
+timeTaken = (/)
 
 planeDR :: Posn -> Degrees -> NMiles -> Posn
 planeDR (Posn p) c d = Posn { lat: fLat, lon: fLon }
