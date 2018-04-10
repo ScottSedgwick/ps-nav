@@ -11,6 +11,7 @@ N.B.  This is partially working:
 ## Initial setup
 
 bower install
+
 npm install
 
 ## Build Application
