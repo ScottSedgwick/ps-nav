@@ -8,6 +8,17 @@ N.B.  This is partially working:
 2. Those parts that are implemented have unit tests and work correctly.
 3. The user interface is not done at all, and still looks like an Address Book tutorial.
 
+## Install the Tools (if required)
+
+These instructions are for a Mac:
+
+* Install Homebrew:
+  * /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+* Install Node: 
+  * brew install node
+* Install Bower:
+  * npm install -g bower
+
 ## Initial setup
 
 bower install
